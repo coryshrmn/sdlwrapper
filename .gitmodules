@@ -1,0 +1,3 @@
+[submodule "lib/cwrapper"]
+	path = lib/cwrapper
+	url = git@github.com:coryshrmn/cwrapper.git
