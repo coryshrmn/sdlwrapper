@@ -1,8 +1,10 @@
 #ifndef SDLWRAPPER_GL_CONTEXT_HPP
 #define SDLWRAPPER_GL_CONTEXT_HPP
 
-#include "sdlwrapper/detail/resource.hpp"
 #include "sdlwrapper/window.hpp"
+
+#include <cwrapper/resource.hpp>
+
 #include <stdexcept>
 
 namespace sdlwrapper
@@ -26,7 +28,7 @@ public:
     GLContext(const Window& window);
 
 private:
-    detail::Resource<SDL_GLContext, detail::GLContextDeleter> _resource;
+    cwrapper::Resource<SDL_GLContext, detail::GLContextDeleter> _resource;
 };
 
 inline GLContext::GLContext(const Window &window)

@@ -33,11 +33,14 @@ enum class WindowFlags : std::uint32_t
 
 } // namespace sdlwrapper
 
+namespace cwrapper
+{
 template <>
 struct EnumTraits<sdlwrapper::WindowFlags>
 {
     constexpr static bool isBitFlag = true;
 };
+} // namespace cwrapper
 
 namespace sdlwrapper
 {
@@ -65,7 +68,7 @@ public:
     SDL_Window* getHandle() const;
 
 private:
-    detail::Resource<SDL_Window*, detail::WindowDeleter> _resource;
+    cwrapper::Resource<SDL_Window*, detail::WindowDeleter> _resource;
 };
 
 inline Window::Window(const VideoSubsystem &, const char *title, int x, int y, int w, int h, WindowFlags flags)
