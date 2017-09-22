@@ -103,7 +103,7 @@ Sdl<Flags>::Sdl()
     : _resource(true)
 {
     if(SDL_Init(static_cast<std::uint32_t>(Flags)) != 0) {
-        throw std::runtime_error("SDL initialization failure");
+        throw std::runtime_error(SDL_GetError());
     }
 }
 

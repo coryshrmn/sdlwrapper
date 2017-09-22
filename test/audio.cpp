@@ -9,6 +9,7 @@ using sdlwrapper::Sdl;
 using sdlwrapper::SubsystemType;
 using sdlwrapper::AudioFormat;
 using sdlwrapper::AudioFormatTraits;
+using sdlwrapper::Wav;
 
 TEST(SdlAudio, AudioFormatTraits) {
     EXPECT_TRUE(AudioFormatTraits<AUDIO_S8>::sampleSigned);
@@ -39,4 +40,15 @@ TEST(SdlAudio, AudioFormatTraits) {
     if constexpr(sizeof(long double) < 16) {
         EXPECT_TRUE((std::is_same_v<typename AudioFormatTraits<AUDIO_F32 & ~SDL_AUDIO_MASK_BITSIZE | sizeof(long double) * 8>::SampleType, long double>));
     }
+}
+
+TEST(SdlAudio, LoadWavFloat) {
+    Sdl<SubsystemType::AUDIO> sdl;
+
+    Wav wav { sdl.audio(), SDLWRAPPER_TEST_RES_DIR "/para_open-01.wav" };
+
+    EXPECT_EQ(wav.getAudioFormat(), AUDIO_F32);
+    EXPECT_EQ(wav.getChannels(), 2);
+    EXPECT_EQ(wav.getFreq(), 96000);
+
 }

@@ -6,6 +6,8 @@
 
 #include <boost/integer.hpp>
 
+#include <stdexcept>
+
 namespace sdlwrapper
 {
 
@@ -23,6 +25,100 @@ struct AudioFormatTraits
 
     using SampleType = detail::AudioSampleType<sampleFloating, sampleBitSize, sampleSigned>;
 };
+
+namespace detail
+{
+
+struct WavDeleter
+{
+    void operator()(std::uint8_t* buf)
+    {
+        SDL_FreeWAV(buf);
+    }
+};
+
+} // namespace detail
+
+class Wav
+{
+public:
+    Wav() = default;
+    explicit Wav(const AudioSubsystem&, const char* fileName);
+
+    std::uint32_t getSizeBytes() const;
+
+    int getFreq() const;
+
+    AudioFormat getAudioFormat() const;
+
+    std::uint8_t getChannels() const;
+
+    std::uint8_t* begin();
+    const std::uint8_t* begin() const;
+
+    std::uint8_t* end();
+    const std::uint8_t* end() const;
+
+private:
+    cwrapper::Resource<std::uint8_t*, detail::WavDeleter> _resource {};
+    std::uint32_t _sizeBytes {};
+    int _freq;
+    AudioFormat _format;
+    std::uint8_t _channels;
+};
+
+inline Wav::Wav(const AudioSubsystem&, const char *fileName)
+{
+    SDL_AudioSpec spec;
+    std::uint8_t* buf;
+    if(SDL_LoadWAV(fileName, &spec, &buf, &_sizeBytes) == nullptr) {
+        throw std::runtime_error(SDL_GetError());
+    }
+    _resource.setHandle(buf);
+    _freq = spec.freq;
+    _format = spec.format;
+    _channels = spec.channels;
+}
+
+uint32_t Wav::getSizeBytes() const
+{
+    return _sizeBytes;
+}
+
+int Wav::getFreq() const
+{
+    return _freq;
+}
+
+AudioFormat Wav::getAudioFormat() const
+{
+    return _format;
+}
+
+uint8_t Wav::getChannels() const
+{
+    return _channels;
+}
+
+uint8_t* Wav::begin()
+{
+    return _resource.getHandle();
+}
+
+const uint8_t* Wav::begin() const
+{
+    return _resource.getHandle();
+}
+
+uint8_t* Wav::end()
+{
+    return _resource.getHandle() + _sizeBytes;
+}
+
+const uint8_t* Wav::end() const
+{
+    return _resource.getHandle() + _sizeBytes;
+}
 
 } // namespace sdlwrapper
 

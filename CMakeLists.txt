@@ -16,6 +16,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include_directories(include)
 include_directories("lib/cwrapper/include")
 
+add_definitions("-DSDLWRAPPER_TEST_RES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/res\"")
+
 set(SDLWRAPPER_HEADERS
     "include/sdlwrapper/audio.hpp"
     "include/sdlwrapper/detail/audio_sample_type.hpp"
