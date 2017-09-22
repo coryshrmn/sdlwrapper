@@ -17,14 +17,17 @@ include_directories(include)
 include_directories("lib/cwrapper/include")
 
 set(SDLWRAPPER_HEADERS
-    "include/sdlwrapper.hpp"
+    "include/sdlwrapper/audio.hpp"
+    "include/sdlwrapper/detail/audio_sample_type.hpp"
     "include/sdlwrapper/gl_context.hpp"
+    "include/sdlwrapper.hpp"
     "include/sdlwrapper/sdl.hpp"
     "include/sdlwrapper/window.hpp"
 )
 
 # main test
 add_executable(sdlwrapper-test
+    test/audio.cpp
     test/sdl.cpp
     ${SDLWRAPPER_HEADERS}
 )
