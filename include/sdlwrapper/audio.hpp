@@ -85,6 +85,9 @@ public:
     AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, Callback callback, int allowedChanges = 0);
     AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, SDL_AudioCallback callback, void* userData = nullptr, int allowedChanges = 0);
 
+    void play();
+    void pause();
+
 private:
     void init(const char* name, bool capture, const SDL_AudioSpec& desiredSpec, int allowedChanges);
 
@@ -159,6 +162,7 @@ AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, 
     desiredSpec.callback = dispatchCallback;
     desiredSpec.userdata = &_optCallback.value();
 
+    std::cout << "init with dispatchCallback" << std::endl;
     init(name, capture, desiredSpec, allowedChanges);
 }
 
@@ -175,6 +179,18 @@ AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, 
     init(name, capture, desiredSpec, allowedChanges);
 }
 
+void AudioDevice::play()
+{
+    assert(_resource.hasHandle());
+    SDL_PauseAudioDevice(_resource.getHandle(), false);
+}
+
+void AudioDevice::pause()
+{
+    assert(_resource.hasHandle());
+    SDL_PauseAudioDevice(_resource.getHandle(), true);
+}
+
 void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desiredSpec, int allowedChanges)
 {
     _resource.setHandle(SDL_OpenAudioDevice(name, capture, &desiredSpec, &_obtainedSpec, allowedChanges));
@@ -185,6 +201,7 @@ void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desi
 
 void AudioDevice::dispatchCallback(void *userdata, uint8_t *stream, int len)
 {
+    std::cout << "dispatching callback" << std::endl;
     reinterpret_cast<Callback*>(userdata)->operator()(stream, len);
 }
 

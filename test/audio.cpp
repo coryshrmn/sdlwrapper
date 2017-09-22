@@ -58,10 +58,29 @@ TEST(SdlAudio, LoadWavFloat) {
 TEST(SdlAudio, AudioDevice) {
     Sdl<SubsystemType::AUDIO> sdl;
 
-    auto callback = [](std::uint8_t* stream, int len) {
-        std::memset(stream, 0, len);
+    int sampleRate = 96000;
+
+    float phase = 0.0f;
+    float period = static_cast<float>(sampleRate) / 440.0f;
+
+    auto callback = [&](std::uint8_t* stream, int len) {
+        //std::memset(stream, 0, len);
+        float* fStream = reinterpret_cast<float*>(stream);
+
+        for(int i = 0; i < len / 4; ++i) {
+            fStream[i] = std::sin(phase * 2.0f * M_PI);
+            phase += 1.0f / period;
+            if(phase > 1.0f) {
+                phase -= 1.0f;
+            }
+        }
+        std::cout << "callback" << std::endl;
     };
 
-    AudioDevice device {sdl.audio(), nullptr, false, 96000, AUDIO_F32, 2, 4096, callback};
+    AudioDevice device {sdl.audio(), nullptr, false, sampleRate, AUDIO_F32, 2, 4096, callback};
+
+    // uncomment these to here A440 sine wave
+//    device.play();
+//    SDL_Delay(2000);
 
 }
