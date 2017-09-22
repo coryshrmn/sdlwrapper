@@ -142,6 +142,32 @@ public:
     void lock();
     void unlock();
 
+    /**
+     * @brief Queue audio for a non-callback output device.
+     * @param data  Source buffer
+     * @param len  Buffer length in bytes
+     */
+    void queue(const void* data, std::uint32_t len);
+
+    /**
+     * @brief Dequeue recorded audio from a non-callback capture device.
+     * @param data  Destination buffer
+     * @param len  Buffer length in bytes
+     * @return Number of bytes stored in destination buffer
+     */
+    std::uint32_t dequeue(void* data, std::uint32_t len);
+
+    /**
+     * @brief Clear the queue of a non-callback output device.
+     */
+    void clearQueue();
+
+    /**
+     * @brief Get the number of bytes queued for playback of a non-callback output device.
+     * @return Number of bytes queued but not yet sent to hardware.
+     */
+    std::uint32_t getQueueSize() const;
+
     static int getNumAudioDevices(const AudioSubsystem&, bool capture = false);
     static const char* getAudioDeviceName(const AudioSubsystem&, int index, bool capture = false);
 
@@ -283,6 +309,30 @@ void AudioDevice::unlock()
     SDL_UnlockAudioDevice(_resource.getHandle());
 }
 
+void AudioDevice::queue(const void* data, uint32_t len)
+{
+    assert(_resource.hasHandle());
+    SDL_QueueAudio(_resource.getHandle(), data, len);
+}
+
+uint32_t AudioDevice::dequeue(void* data, uint32_t len)
+{
+    assert(_resource.hasHandle());
+    return SDL_DequeueAudio(_resource.getHandle(), data, len);
+}
+
+void AudioDevice::clearQueue()
+{
+    assert(_resource.hasHandle());
+    SDL_ClearQueuedAudio(_resource.getHandle());
+}
+
+uint32_t AudioDevice::getQueueSize() const
+{
+    assert(_resource.hasHandle());
+    return SDL_GetQueuedAudioSize(_resource.getHandle());
+}
+
 int AudioDevice::getNumAudioDevices(const AudioSubsystem&, bool capture)
 {
     return SDL_GetNumAudioDevices(capture);
@@ -307,7 +357,6 @@ void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desi
 
 void AudioDevice::dispatchCallback(void *userdata, uint8_t *stream, int len)
 {
-    std::cout << "dispatching callback" << std::endl;
     reinterpret_cast<Callback*>(userdata)->operator()(stream, len);
 }
 
