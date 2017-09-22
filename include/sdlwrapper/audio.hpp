@@ -7,6 +7,8 @@
 #include <boost/integer.hpp>
 
 #include <stdexcept>
+#include <optional>
+#include <functional>
 
 namespace sdlwrapper
 {
@@ -37,6 +39,14 @@ struct WavDeleter
     }
 };
 
+struct AudioDeviceDeleter
+{
+    void operator()(SDL_AudioDeviceID dev)
+    {
+        SDL_CloseAudioDevice(dev);
+    }
+};
+
 } // namespace detail
 
 class Wav
@@ -62,9 +72,27 @@ public:
 private:
     cwrapper::Resource<std::uint8_t*, detail::WavDeleter> _resource {};
     std::uint32_t _sizeBytes {};
-    int _freq;
-    AudioFormat _format;
-    std::uint8_t _channels;
+    int _freq {};
+    AudioFormat _format {};
+    std::uint8_t _channels {};
+};
+
+class AudioDevice
+{
+public:
+    using Callback = std::function<void(std::uint8_t* stream, int len)>;
+
+    AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, Callback callback, int allowedChanges = 0);
+    AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, SDL_AudioCallback callback, void* userData = nullptr, int allowedChanges = 0);
+
+private:
+    void init(const char* name, bool capture, const SDL_AudioSpec& desiredSpec, int allowedChanges);
+
+    std::optional<Callback> _optCallback {};
+    cwrapper::Resource<SDL_AudioDeviceID, detail::AudioDeviceDeleter> _resource {};
+    SDL_AudioSpec _obtainedSpec {};
+
+    static void dispatchCallback(void* userdata, std::uint8_t* stream, int len);
 };
 
 inline Wav::Wav(const AudioSubsystem&, const char *fileName)
@@ -119,6 +147,47 @@ const uint8_t* Wav::end() const
 {
     return _resource.getHandle() + _sizeBytes;
 }
+
+AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioDevice::Callback callback, int allowedChanges)
+    : _optCallback(callback)
+{
+    SDL_AudioSpec desiredSpec {};
+    desiredSpec.freq = freq;
+    desiredSpec.format = format;
+    desiredSpec.channels = channels;
+    desiredSpec.samples = samples;
+    desiredSpec.callback = dispatchCallback;
+    desiredSpec.userdata = &_optCallback.value();
+
+    init(name, capture, desiredSpec, allowedChanges);
+}
+
+AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, SDL_AudioCallback callback, void *userdata, int allowedChanges)
+{
+    SDL_AudioSpec desiredSpec {};
+    desiredSpec.freq = freq;
+    desiredSpec.format = format;
+    desiredSpec.channels = channels;
+    desiredSpec.samples = samples;
+    desiredSpec.callback = callback;
+    desiredSpec.userdata = userdata;
+
+    init(name, capture, desiredSpec, allowedChanges);
+}
+
+void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desiredSpec, int allowedChanges)
+{
+    _resource.setHandle(SDL_OpenAudioDevice(name, capture, &desiredSpec, &_obtainedSpec, allowedChanges));
+    if(!_resource.hasHandle()) {
+        throw std::runtime_error(SDL_GetError());
+    }
+}
+
+void AudioDevice::dispatchCallback(void *userdata, uint8_t *stream, int len)
+{
+    reinterpret_cast<Callback*>(userdata)->operator()(stream, len);
+}
+
 
 } // namespace sdlwrapper
 

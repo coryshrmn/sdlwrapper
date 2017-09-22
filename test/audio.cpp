@@ -3,6 +3,7 @@
 #include "sdlwrapper/audio.hpp"
 
 #include <cstdint>
+#include <cstring>
 #include <type_traits>
 
 using sdlwrapper::Sdl;
@@ -10,6 +11,7 @@ using sdlwrapper::SubsystemType;
 using sdlwrapper::AudioFormat;
 using sdlwrapper::AudioFormatTraits;
 using sdlwrapper::Wav;
+using sdlwrapper::AudioDevice;
 
 TEST(SdlAudio, AudioFormatTraits) {
     EXPECT_TRUE(AudioFormatTraits<AUDIO_S8>::sampleSigned);
@@ -50,5 +52,16 @@ TEST(SdlAudio, LoadWavFloat) {
     EXPECT_EQ(wav.getAudioFormat(), AUDIO_F32);
     EXPECT_EQ(wav.getChannels(), 2);
     EXPECT_EQ(wav.getFreq(), 96000);
+
+}
+
+TEST(SdlAudio, AudioDevice) {
+    Sdl<SubsystemType::AUDIO> sdl;
+
+    auto callback = [](std::uint8_t* stream, int len) {
+        std::memset(stream, 0, len);
+    };
+
+    AudioDevice device {sdl.audio(), nullptr, false, 96000, AUDIO_F32, 2, 4096, callback};
 
 }
