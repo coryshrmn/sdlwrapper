@@ -25,6 +25,8 @@
 #include <optional>
 #include <functional>
 
+#define SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK (SDL_MAJOR_VERSION > 2 || SDL_MAJOR_VERSION == 2 && SDL_MINOR_VERSION > 0 || SDL_MAJOR_VERSION == 2 && SDL_MINOR_VERSION == 0 && SDL_PATCHLEVEL >= 4)
+
 namespace sdlwrapper
 {
 
@@ -134,6 +136,7 @@ public:
      */
     AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, SDL_AudioCallback callback, void* userData = nullptr, AudioSpecChanges allowedChanges = {});
 
+#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
     /**
      * @brief Open an audio device with no callback, to be used with queue or deque.
      *
@@ -146,6 +149,7 @@ public:
      * @param allowedChanges  Any of the AudioSpecChanges bit flags OR'd together.
      */
     AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, AudioSpecChanges allowedChanges = {});
+#endif // SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 
     SDL_AudioStatus getStatus() const;
 
@@ -157,6 +161,7 @@ public:
     void lock();
     void unlock();
 
+#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
     /**
      * @brief Queue audio for a non-callback output device.
      * @param data  Source buffer
@@ -182,6 +187,7 @@ public:
      * @return Number of bytes queued but not yet sent to hardware.
      */
     std::uint32_t getQueueSize() const;
+#endif // SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 
     static int getNumAudioDevices(const AudioSubsystem&, bool capture = false);
     static const char* getAudioDeviceName(const AudioSubsystem&, int index, bool capture = false);
