@@ -194,47 +194,47 @@ inline Wav::Wav(const AudioSubsystem&, const char *fileName)
     _channels = spec.channels;
 }
 
-uint32_t Wav::getSizeBytes() const
+inline uint32_t Wav::getSizeBytes() const
 {
     return _sizeBytes;
 }
 
-int Wav::getFreq() const
+inline int Wav::getFreq() const
 {
     return _freq;
 }
 
-AudioFormat Wav::getAudioFormat() const
+inline AudioFormat Wav::getAudioFormat() const
 {
     return _format;
 }
 
-uint8_t Wav::getChannels() const
+inline uint8_t Wav::getChannels() const
 {
     return _channels;
 }
 
-uint8_t* Wav::begin()
+inline uint8_t* Wav::begin()
 {
     return _resource.getHandle();
 }
 
-const uint8_t* Wav::begin() const
+inline const uint8_t* Wav::begin() const
 {
     return _resource.getHandle();
 }
 
-uint8_t* Wav::end()
+inline uint8_t* Wav::end()
 {
     return _resource.getHandle() + _sizeBytes;
 }
 
-const uint8_t* Wav::end() const
+inline const uint8_t* Wav::end() const
 {
     return _resource.getHandle() + _sizeBytes;
 }
 
-AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioDevice::Callback callback, AudioSpecChanges allowedChanges)
+inline AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioDevice::Callback callback, AudioSpecChanges allowedChanges)
     : _optCallback(callback)
 {
     SDL_AudioSpec desiredSpec {};
@@ -249,7 +249,7 @@ AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, 
     init(name, capture, desiredSpec, allowedChanges);
 }
 
-AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, SDL_AudioCallback callback, void *userdata, AudioSpecChanges allowedChanges)
+inline AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, SDL_AudioCallback callback, void *userdata, AudioSpecChanges allowedChanges)
 {
     SDL_AudioSpec desiredSpec {};
     desiredSpec.freq = freq;
@@ -262,7 +262,7 @@ AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool capture, 
     init(name, capture, desiredSpec, allowedChanges);
 }
 
-AudioDevice::AudioDevice(const AudioSubsystem &, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioSpecChanges allowedChanges)
+inline AudioDevice::AudioDevice(const AudioSubsystem &, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioSpecChanges allowedChanges)
 {
     SDL_AudioSpec desiredSpec {};
     desiredSpec.freq = freq;
@@ -273,72 +273,72 @@ AudioDevice::AudioDevice(const AudioSubsystem &, const char *name, bool capture,
     init(name, capture, desiredSpec, allowedChanges);
 }
 
-SDL_AudioStatus AudioDevice::getStatus() const
+inline SDL_AudioStatus AudioDevice::getStatus() const
 {
     assert(_resource.hasHandle());
     return SDL_GetAudioDeviceStatus(_resource.getHandle());
 }
 
-const SDL_AudioSpec& AudioDevice::getObtainedSpec() const
+inline const SDL_AudioSpec& AudioDevice::getObtainedSpec() const
 {
     assert(_resource.hasHandle());
     return _obtainedSpec;
 }
 
-void AudioDevice::play()
+inline void AudioDevice::play()
 {
     assert(_resource.hasHandle());
     SDL_PauseAudioDevice(_resource.getHandle(), false);
 }
 
-void AudioDevice::pause()
+inline void AudioDevice::pause()
 {
     assert(_resource.hasHandle());
     SDL_PauseAudioDevice(_resource.getHandle(), true);
 }
 
-void AudioDevice::lock()
+inline void AudioDevice::lock()
 {
     assert(_resource.hasHandle());
     SDL_LockAudioDevice(_resource.getHandle());
 }
 
-void AudioDevice::unlock()
+inline void AudioDevice::unlock()
 {
     assert(_resource.hasHandle());
     SDL_UnlockAudioDevice(_resource.getHandle());
 }
 
-void AudioDevice::queue(const void* data, uint32_t len)
+inline void AudioDevice::queue(const void* data, uint32_t len)
 {
     assert(_resource.hasHandle());
     SDL_QueueAudio(_resource.getHandle(), data, len);
 }
 
-uint32_t AudioDevice::dequeue(void* data, uint32_t len)
+inline uint32_t AudioDevice::dequeue(void* data, uint32_t len)
 {
     assert(_resource.hasHandle());
     return SDL_DequeueAudio(_resource.getHandle(), data, len);
 }
 
-void AudioDevice::clearQueue()
+inline void AudioDevice::clearQueue()
 {
     assert(_resource.hasHandle());
     SDL_ClearQueuedAudio(_resource.getHandle());
 }
 
-uint32_t AudioDevice::getQueueSize() const
+inline uint32_t AudioDevice::getQueueSize() const
 {
     assert(_resource.hasHandle());
     return SDL_GetQueuedAudioSize(_resource.getHandle());
 }
 
-int AudioDevice::getNumAudioDevices(const AudioSubsystem&, bool capture)
+inline int AudioDevice::getNumAudioDevices(const AudioSubsystem&, bool capture)
 {
     return SDL_GetNumAudioDevices(capture);
 }
 
-const char* AudioDevice::getAudioDeviceName(const AudioSubsystem&, int index, bool capture)
+inline const char* AudioDevice::getAudioDeviceName(const AudioSubsystem&, int index, bool capture)
 {
     const char* name = SDL_GetAudioDeviceName(index, capture);
     if(name == nullptr) {
@@ -347,7 +347,7 @@ const char* AudioDevice::getAudioDeviceName(const AudioSubsystem&, int index, bo
     return name;
 }
 
-void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desiredSpec, AudioSpecChanges allowedChanges)
+inline void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desiredSpec, AudioSpecChanges allowedChanges)
 {
     _resource.setHandle(SDL_OpenAudioDevice(name, capture, &desiredSpec, &_obtainedSpec, static_cast<int>(allowedChanges)));
     if(!_resource.hasHandle()) {
@@ -355,7 +355,7 @@ void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpec& desi
     }
 }
 
-void AudioDevice::dispatchCallback(void *userdata, uint8_t *stream, int len)
+inline void AudioDevice::dispatchCallback(void *userdata, uint8_t *stream, int len)
 {
     reinterpret_cast<Callback*>(userdata)->operator()(stream, len);
 }
