@@ -282,6 +282,7 @@ inline AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool ca
     init(name, capture, desiredSpec, allowedChanges);
 }
 
+#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 inline AudioDevice::AudioDevice(const AudioSubsystem &, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioSpecChanges allowedChanges)
 {
     SDL_AudioSpec desiredSpec {};
@@ -292,6 +293,7 @@ inline AudioDevice::AudioDevice(const AudioSubsystem &, const char *name, bool c
 
     init(name, capture, desiredSpec, allowedChanges);
 }
+#endif // SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 
 inline SDL_AudioStatus AudioDevice::getStatus() const
 {
@@ -329,6 +331,7 @@ inline void AudioDevice::unlock()
     SDL_UnlockAudioDevice(_resource.getHandle());
 }
 
+#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 inline void AudioDevice::queue(const void* data, uint32_t len)
 {
     assert(_resource.hasHandle());
@@ -352,6 +355,7 @@ inline uint32_t AudioDevice::getQueueSize() const
     assert(_resource.hasHandle());
     return SDL_GetQueuedAudioSize(_resource.getHandle());
 }
+#endif // SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 
 inline int AudioDevice::getNumAudioDevices(const AudioSubsystem&, bool capture)
 {
