@@ -33,7 +33,7 @@ before_script:
     - cmake --build .
 script:
     - cd ${TRAVIS_BUILD_DIR}/build
-    - env AUDIODEV=null ./sdlwrapper-test
+    - env AUDIODEV=null DISPLAY=:0 ./sdlwrapper-test
 notifications:
     email:
         on_success: change
