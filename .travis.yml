@@ -9,21 +9,22 @@ matrix:
                 apt:
                     sources: ['ubuntu-toolchain-r-test']
                     packages:
-                        - 'g++-6'
+                        - 'g++-7'
                         - 'libsdl2-dev'
-            env: COMPILER='g++-6'
+            env: C='gcc-7' CXX='g++-7'
         -   os: linux
             compiler: clang
             addons: &clang40
                 apt:
-                    sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+                    sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-5.0']
                     packages:
-                        - 'libstdc++-6-dev'
-                        - 'clang-4.0'
+                        - 'libstdc++-7-dev'
+                        - 'clang-5.0'
                         - 'libsdl2-dev'
-            env: COMPILER='clang++-4.0'
+            env: C='clang-5.0' CXX='clang++-5.0'
 before_script:
-    - export CXX=${COMPILER}
+    - export C=${C}
+    - export CXX=${CXX}
     - cd ${TRAVIS_BUILD_DIR}
     - mkdir build && cd build
     - cmake -DCMAKE_BUILD_TYPE=Debug -Wdev ..
