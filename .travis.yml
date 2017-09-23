@@ -11,7 +11,7 @@ matrix:
                     packages:
                         - 'g++-7'
                         - 'libsdl2-dev'
-            env: C='gcc-7' CXX='g++-7'
+            env: C_COMPILER='gcc-7' CXX_COMPILER='g++-7'
         -   os: linux
             compiler: clang
             addons: &clang40
@@ -23,7 +23,7 @@ matrix:
                         - 'libsdl2-dev'
             env: C_COMPILER='clang-5.0' CXX_COMPILER='clang++-5.0'
 before_script:
-    - export C=${C_COMPILER}
+    - export CC=${C_COMPILER}
     - export CXX=${CXX_COMPILER}
     - cd ${TRAVIS_BUILD_DIR}
     - mkdir build && cd build
