@@ -1,4 +1,4 @@
-# SDLWrapper
+# SDLWrapper [![Build Status](https://travis-ci.org/coryshrmn/sdlwrapper.svg?branch=master)](https://travis-ci.org/coryshrmn/sdlwrapper)
 
 Header-only C++17 wrapper for SDL 2
 

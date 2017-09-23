@@ -19,7 +19,7 @@
 # SDL2
 # glew 2.0.0+
 
-cmake_minimum_required(VERSION 3.5 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.2.2 FATAL_ERROR)
 
 project(sdlwrapper-test)
 

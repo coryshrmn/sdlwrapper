@@ -1,0 +1,33 @@
+language: cpp
+dist: trusty
+sudo: false
+matrix:
+    include:
+        -   os: linux
+            compiler: gcc
+            addons: &gcc6
+                apt:
+                    sources: ['ubuntu-toolchain-r-test']
+                    packages:
+                        - 'g++-6'
+                        - 'libsdl2-dev'
+            env: COMPILER='g++-6'
+        -   os: linux
+            compiler: clang
+            addons: &clang40
+                apt:
+                    sources: ['ubuntu-toolchain-r-test', 'llvm-toolchain-trusty-4.0']
+                    packages:
+                        - 'libstdc++-6-dev'
+                        - 'clang-4.0'
+                        - 'libsdl2-dev'
+            env: COMPILER='clang++-4.0'
+before_script:
+    - export CXX=${COMPILER}
+    - cd ${TRAVIS_BUILD_DIR}
+    - mkdir build && cd build
+    - cmake -DCMAKE_BUILD_TYPE=Debug -Wdev ..
+    - cmake --build .
+script:
+    - cd ${TRAVIS_BUILD_DIR}/build
+    - ./sdlwrapper-test
