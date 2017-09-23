@@ -11,6 +11,7 @@ matrix:
                     packages:
                         - 'g++-7'
                         - 'libsdl2-dev'
+                        - 'libboost-dev'
             env: C_COMPILER='gcc-7' CXX_COMPILER='g++-7'
         -   os: linux
             compiler: clang
@@ -21,6 +22,7 @@ matrix:
                         - 'libstdc++-7-dev'
                         - 'clang-5.0'
                         - 'libsdl2-dev'
+                        - 'libboost-dev'
             env: C_COMPILER='clang-5.0' CXX_COMPILER='clang++-5.0'
 before_script:
     - export CC=${C_COMPILER}

@@ -8,6 +8,10 @@ Worked on as needed for my game. Mostly just RAII stuff for now.
 
 ## Using SDLWrapper
 
+### Dependencies
+
+Boost Integer
+
 ### Including SDLWrapper
 
 You can add the [include](include) directory to your project,
