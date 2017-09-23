@@ -245,7 +245,6 @@ inline AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool ca
     desiredSpec.callback = dispatchCallback;
     desiredSpec.userdata = &_optCallback.value();
 
-    std::cout << "init with dispatchCallback" << std::endl;
     init(name, capture, desiredSpec, allowedChanges);
 }
 
