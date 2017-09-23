@@ -177,4 +177,8 @@
    END OF TERMS AND CONDITIONS
 
 
-cmake/FindSDL2.cmake is included under the BSD 3-Clause License.
+cmake/FindSDL2.cmake is used under the BSD 3-Clause License,
+from https://github.com/Kitware/VTK/blob/master/CMake/FindSDL2.cmake
+
+res/para_wave-01.wav is used under Creative Commons Attribution 3.0 Unported (CC BY 3.0),
+modified from https://freesound.org/people/Sauron974/sounds/188733/
