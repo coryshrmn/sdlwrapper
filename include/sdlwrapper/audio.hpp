@@ -335,7 +335,9 @@ inline void AudioDevice::unlock()
 inline void AudioDevice::queue(const void* data, uint32_t len)
 {
     assert(_resource.hasHandle());
-    SDL_QueueAudio(_resource.getHandle(), data, len);
+    if(SDL_QueueAudio(_resource.getHandle(), data, len) != 0) {
+        throw std::runtime_error(SDL_GetError());
+    }
 }
 
 inline uint32_t AudioDevice::dequeue(void* data, uint32_t len)
