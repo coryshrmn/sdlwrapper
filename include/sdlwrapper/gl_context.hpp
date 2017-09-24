@@ -42,6 +42,8 @@ public:
     GLContext() = default;
     GLContext(const Window& window);
 
+    void makeCurrent(const Window& window);
+
 private:
     cwrapper::Resource<SDL_GLContext, detail::GLContextDeleter> _resource;
 };
@@ -50,6 +52,13 @@ inline GLContext::GLContext(const Window &window)
     : _resource(SDL_GL_CreateContext(window.getHandle()))
 {
     if(!_resource.hasHandle()) {
+        throw std::runtime_error(SDL_GetError());
+    }
+}
+
+inline void GLContext::makeCurrent(const Window &window)
+{
+    if(SDL_GL_MakeCurrent(window.getHandle(), _resource.getHandle()) != 0) {
         throw std::runtime_error(SDL_GetError());
     }
 }
