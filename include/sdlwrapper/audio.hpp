@@ -136,7 +136,7 @@ public:
      */
     AudioDevice(const AudioSubsystem&, const char* name, bool capture, int freq, AudioFormat format, std::uint8_t channels, std::uint16_t samples, SDL_AudioCallback callback, void* userData = nullptr, AudioSpecChanges allowedChanges = {});
 
-#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
+#ifdef SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
     /**
      * @brief Open an audio device with no callback, to be used with queue or deque.
      *
@@ -161,7 +161,7 @@ public:
     void lock();
     void unlock();
 
-#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
+#ifdef SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
     /**
      * @brief Queue audio for a non-callback output device.
      * @param data  Source buffer
@@ -282,7 +282,7 @@ inline AudioDevice::AudioDevice(const AudioSubsystem&, const char *name, bool ca
     init(name, capture, desiredSpec, allowedChanges);
 }
 
-#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
+#ifdef SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 inline AudioDevice::AudioDevice(const AudioSubsystem &, const char *name, bool capture, int freq, AudioFormat format, uint8_t channels, uint16_t samples, AudioSpecChanges allowedChanges)
 {
     SDL_AudioSpec desiredSpec {};
@@ -331,7 +331,7 @@ inline void AudioDevice::unlock()
     SDL_UnlockAudioDevice(_resource.getHandle());
 }
 
-#if SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
+#ifdef SDLWRAPPER_AUDIO_SUPPORTS_NONCALLBACK
 inline void AudioDevice::queue(const void* data, uint32_t len)
 {
     assert(_resource.hasHandle());
