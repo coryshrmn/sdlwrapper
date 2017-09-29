@@ -94,9 +94,9 @@ public:
 
     void makeCurrent(const Window& window);
 
-    int getMajor() { return _major; }
-    int getMinor() { return _minor; }
-    Profile getProfile() { return _profile; }
+    int getMajor() const { return _major; }
+    int getMinor() const { return _minor; }
+    Profile getProfile() const { return _profile; }
 
     static const char* getProfileName(Profile profile);
 
@@ -170,7 +170,7 @@ inline void GLContext::makeCurrent(const Window &window)
     }
 }
 
-inline const char *GLContext::getProfileName(GLContext::Profile profile)
+inline const char* GLContext::getProfileName(GLContext::Profile profile)
 {
     switch(profile) {
     case Profile::CORE: return "CORE";
@@ -182,12 +182,19 @@ inline const char *GLContext::getProfileName(GLContext::Profile profile)
 
 } // namespace sdlwrapper
 
-inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLAttribute& attribute) {
+inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLAttribute& attribute)
+{
     return out << sdlwrapper::getGLAttributeName(attribute);
 }
 
-inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLContext::Profile& profile) {
+inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLContext::Profile& profile)
+{
     return out << sdlwrapper::GLContext::getProfileName(profile);
+}
+
+inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLContext& context)
+{
+    return out << context.getMajor() << "." << context.getMinor() << " " << context.getProfile();
 }
 
 #endif // SDLWRAPPER_GL_CONTEXT_HPP
