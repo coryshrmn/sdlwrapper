@@ -83,6 +83,8 @@ public:
 
     bool isAttached() const;
 
+    SDL_JoystickID getInstanceID() const;
+
 private:
 
     cwrapper::Resource<SDL_GameController*, detail::GameControllerDeleter> _resource;
@@ -109,6 +111,19 @@ bool GameController::get(GameController::Button button) const
 bool GameController::isAttached() const
 {
     return _resource.hasHandle() && SDL_GameControllerGetAttached(_resource.getHandle());
+}
+
+SDL_JoystickID GameController::getInstanceID() const
+{
+    SDL_Joystick* joystick = SDL_GameControllerGetJoystick(_resource.getHandle());
+    if(joystick == nullptr) {
+        throw std::runtime_error(SDL_GetError());
+    }
+    SDL_JoystickID id = SDL_JoystickInstanceID(joystick);
+    if(id < 0) {
+        throw std::runtime_error(SDL_GetError());
+    }
+    return id;
 }
 
 } // namespace sdlwrapper
