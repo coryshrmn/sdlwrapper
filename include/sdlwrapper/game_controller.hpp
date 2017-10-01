@@ -76,6 +76,8 @@ public:
         MAX = SDL_CONTROLLER_BUTTON_MAX
     };
 
+    GameController() = default;
+
     GameController(const GameControllerSubsystem& subsystem, int index);
 
     std::int16_t get(Axis axis) const;
@@ -90,10 +92,10 @@ public:
 
 private:
 
-    cwrapper::Resource<SDL_GameController*, detail::GameControllerDeleter> _resource;
+    cwrapper::Resource<SDL_GameController*, detail::GameControllerDeleter> _resource {};
 };
 
-GameController::GameController(const GameControllerSubsystem&, int index)
+inline GameController::GameController(const GameControllerSubsystem&, int index)
     : _resource(SDL_GameControllerOpen(index))
 {
     if(!_resource.hasHandle()) {
@@ -101,12 +103,12 @@ GameController::GameController(const GameControllerSubsystem&, int index)
     }
 }
 
-int16_t GameController::get(GameController::Axis axis) const
+inline int16_t GameController::get(GameController::Axis axis) const
 {
     return SDL_GameControllerGetAxis(_resource.getHandle(), static_cast<SDL_GameControllerAxis>(axis));
 }
 
-float GameController::getFloat(GameController::Axis axis) const
+inline float GameController::getFloat(GameController::Axis axis) const
 {
     float val = static_cast<float>(get(axis)) / static_cast<float>(std::numeric_limits<int16_t>::max());
     // since original val is signed, it goes 1 further in negative direction than positive
@@ -114,17 +116,17 @@ float GameController::getFloat(GameController::Axis axis) const
     return std::max(-1.0f, val);
 }
 
-bool GameController::get(GameController::Button button) const
+inline bool GameController::get(GameController::Button button) const
 {
     return SDL_GameControllerGetButton(_resource.getHandle(), static_cast<SDL_GameControllerButton>(button));
 }
 
-bool GameController::isAttached() const
+inline bool GameController::isAttached() const
 {
     return _resource.hasHandle() && SDL_GameControllerGetAttached(_resource.getHandle());
 }
 
-SDL_JoystickID GameController::getInstanceID() const
+inline SDL_JoystickID GameController::getInstanceID() const
 {
     SDL_Joystick* joystick = SDL_GameControllerGetJoystick(_resource.getHandle());
     if(joystick == nullptr) {
