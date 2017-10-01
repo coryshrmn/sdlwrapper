@@ -35,6 +35,7 @@ add_definitions("-DSDLWRAPPER_TEST_RES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/res\"")
 set(SDLWRAPPER_HEADERS
     "include/sdlwrapper/audio.hpp"
     "include/sdlwrapper/detail/audio_sample_type.hpp"
+    "include/sdlwrapper/game_controller.hpp"
     "include/sdlwrapper/gl_context.hpp"
     "include/sdlwrapper.hpp"
     "include/sdlwrapper/sdl.hpp"
@@ -44,6 +45,7 @@ set(SDLWRAPPER_HEADERS
 # main test
 add_executable(sdlwrapper-test
     test/audio.cpp
+    test/game_controller.cpp
     test/sdl.cpp
     ${SDLWRAPPER_HEADERS}
 )

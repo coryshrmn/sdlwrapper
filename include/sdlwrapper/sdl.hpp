@@ -65,7 +65,7 @@ using AudioSubsystem = Subsystem<SubsystemType::AUDIO>;
 using VideoSubsystem = Subsystem<SubsystemType::VIDEO>;
 using JoystickSubsystem = Subsystem<SubsystemType::JOYSTICK>;
 using HapticSubsystem = Subsystem<SubsystemType::HAPTIC>;
-using GamecontrollerSubsystem = Subsystem<SubsystemType::GAMECONTROLLER>;
+using GameControllerSubsystem = Subsystem<SubsystemType::GAMECONTROLLER>;
 using EventsSubsystem = Subsystem<SubsystemType::EVENTS>;
 
 namespace detail

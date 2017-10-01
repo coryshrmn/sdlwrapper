@@ -13,13 +13,21 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 */
-#ifndef SDLWRAPPER_HPP
-#define SDLWRAPPER_HPP
+#include "gtest/gtest.h"
 
-#include "sdlwrapper/audio.hpp"
 #include "sdlwrapper/game_controller.hpp"
-#include "sdlwrapper/gl_context.hpp"
-#include "sdlwrapper/sdl.hpp"
-#include "sdlwrapper/window.hpp"
 
-#endif // SDLWRAPPER_HPP
+using sdlwrapper::Sdl;
+using sdlwrapper::SubsystemType;
+using sdlwrapper::GameController;
+
+TEST(GameController, Open) {
+
+    Sdl<SubsystemType::GAMECONTROLLER> sdl;
+
+    for(int i = 0; i < SDL_NumJoysticks(); ++i) {
+        if(SDL_IsGameController(i)) {
+            GameController controller { sdl.gamecontroller(), i };
+        }
+    }
+}
