@@ -21,6 +21,7 @@
 #include <cwrapper/resource.hpp>
 
 #include <stdexcept>
+#include <limits>
 
 namespace sdlwrapper
 {
@@ -79,6 +80,8 @@ public:
 
     std::int16_t get(Axis axis) const;
 
+    float getFloat(Axis axis) const;
+
     bool get(Button button) const;
 
     bool isAttached() const;
@@ -101,6 +104,14 @@ GameController::GameController(const GameControllerSubsystem&, int index)
 int16_t GameController::get(GameController::Axis axis) const
 {
     return SDL_GameControllerGetAxis(_resource.getHandle(), static_cast<SDL_GameControllerAxis>(axis));
+}
+
+float GameController::getFloat(GameController::Axis axis) const
+{
+    float val = static_cast<float>(get(axis)) / static_cast<float>(std::numeric_limits<int16_t>::max());
+    // since original val is signed, it goes 1 further in negative direction than positive
+    // so we clamp at -1.0f
+    return std::max(-1.0f, val);
 }
 
 bool GameController::get(GameController::Button button) const
