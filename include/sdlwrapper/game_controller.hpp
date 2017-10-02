@@ -76,6 +76,24 @@ public:
         MAX = SDL_CONTROLLER_BUTTON_MAX
     };
 
+    static constexpr std::array<Button, 15> ALL_BUTTONS {
+        Button::A,
+        Button::B,
+        Button::X,
+        Button::Y,
+        Button::BACK,
+        Button::GUIDE,
+        Button::START,
+        Button::LEFTSTICK,
+        Button::RIGHTSTICK,
+        Button::LEFTSHOULDER,
+        Button::RIGHTSHOULDER,
+        Button::DPAD_UP,
+        Button::DPAD_DOWN,
+        Button::DPAD_LEFT,
+        Button::DPAD_RIGHT
+    };
+
     GameController() = default;
 
     GameController(const GameControllerSubsystem& subsystem, int index);
