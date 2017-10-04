@@ -20,8 +20,10 @@
 
 #include <cwrapper/resource.hpp>
 
-#include <stdexcept>
+#include <algorithm>
+#include <array>
 #include <limits>
+#include <stdexcept>
 
 namespace sdlwrapper
 {
