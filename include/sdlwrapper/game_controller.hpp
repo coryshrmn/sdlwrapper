@@ -96,6 +96,15 @@ public:
         Button::DPAD_RIGHT
     };
 
+    static constexpr std::array<Axis, 6> ALL_AXES {
+        Axis::LEFTX,
+        Axis::LEFTY,
+        Axis::RIGHTX,
+        Axis::RIGHTY,
+        Axis::TRIGGERLEFT,
+        Axis::TRIGGERRIGHT
+    };
+
     GameController() = default;
 
     GameController(const GameControllerSubsystem& subsystem, int index);
