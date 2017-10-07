@@ -82,11 +82,15 @@ struct SdlDeleter
 template <SubsystemType Flags>
 class Sdl
 {
-public:
-    Sdl();
-
-    template <SubsystemType S, typename = std::enable_if_t<(Flags & S) == S>>
+private:
+    template <SubsystemType S>
     Subsystem<S> getSubsystem() const;
+
+    cwrapper::Resource<bool, detail::SdlDeleter> _resource;
+
+public:
+
+    Sdl();
 
     template <SubsystemType F = Flags, typename = std::enable_if_t<(F & SubsystemType::TIMER) == SubsystemType::TIMER>>
     Subsystem<SubsystemType::TIMER> timer() const { return getSubsystem<SubsystemType::TIMER>(); }
@@ -97,7 +101,7 @@ public:
     template <SubsystemType F = Flags, typename = std::enable_if_t<(F & SubsystemType::VIDEO) == SubsystemType::VIDEO>>
     Subsystem<SubsystemType::VIDEO> video() const { return getSubsystem<SubsystemType::VIDEO>(); }
 
-    template <SubsystemType F = Flags, typename = std::enable_if_t<(F & SubsystemType::JOYSTICK) == SubsystemType::JOYSTICK>>
+    template <SubsystemType F = Flags, typename = std::enable_if_t<(F & (SubsystemType::JOYSTICK | SubsystemType::GAMECONTROLLER)) != static_cast<SubsystemType>(0)>>
     Subsystem<SubsystemType::JOYSTICK> joystick() const { return getSubsystem<SubsystemType::JOYSTICK>(); }
 
     template <SubsystemType F = Flags, typename = std::enable_if_t<(F & SubsystemType::HAPTIC) == SubsystemType::HAPTIC>>
@@ -106,11 +110,8 @@ public:
     template <SubsystemType F = Flags, typename = std::enable_if_t<(F & SubsystemType::GAMECONTROLLER) == SubsystemType::GAMECONTROLLER>>
     Subsystem<SubsystemType::GAMECONTROLLER> gamecontroller() const { return getSubsystem<SubsystemType::GAMECONTROLLER>(); }
 
-    template <SubsystemType F = Flags, typename = std::enable_if_t<(F & SubsystemType::EVENTS) == SubsystemType::EVENTS>>
+    template <SubsystemType F = Flags, typename = std::enable_if_t<(F & (SubsystemType::EVENTS | SubsystemType::VIDEO | SubsystemType::JOYSTICK | SubsystemType::GAMECONTROLLER)) != static_cast<SubsystemType>(0)>>
     Subsystem<SubsystemType::EVENTS> events() const { return getSubsystem<SubsystemType::EVENTS>(); }
-
-private:
-    cwrapper::Resource<bool, detail::SdlDeleter> _resource;
 };
 
 template <SubsystemType Flags>
@@ -123,7 +124,7 @@ Sdl<Flags>::Sdl()
 }
 
 template <SubsystemType Flags>
-template <SubsystemType S, typename>
+template <SubsystemType S>
 Subsystem<S> Sdl<Flags>::getSubsystem() const
 {
     assert(_resource.hasHandle());
