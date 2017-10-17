@@ -16,15 +16,16 @@
 #ifndef SDLWRAPPER_SDL_HPP
 #define SDLWRAPPER_SDL_HPP
 
+#include <cwrapper/enum.hpp>
+#include <cwrapper/resource.hpp>
+
 #include <SDL.h>
 
 #include <cassert>
 #include <cstdint>
+#include <ostream>
 #include <stdexcept>
 #include <type_traits>
-
-#include <cwrapper/enum.hpp>
-#include <cwrapper/resource.hpp>
 
 namespace sdlwrapper
 {
@@ -132,5 +133,10 @@ Subsystem<S> Sdl<Flags>::getSubsystem() const
 }
 
 } // namespace sdlwrapper
+
+inline std::ostream& operator<<(std::ostream& out, const SDL_version& sdlVersion)
+{
+    return out << static_cast<int>(sdlVersion.major) << "." << static_cast<int>(sdlVersion.minor) << "." << static_cast<int>(sdlVersion.patch);
+}
 
 #endif // SDLWRAPPER_SDL_HPP
