@@ -16,6 +16,7 @@
 #ifndef SDLWRAPPER_GAME_CONTROLLER_HPP
 #define SDLWRAPPER_GAME_CONTROLLER_HPP
 
+#include "sdlwrapper/sdl_error.hpp"
 #include "sdlwrapper/sdl.hpp"
 
 #include <cwrapper/resource.hpp>
@@ -23,7 +24,6 @@
 #include <algorithm>
 #include <array>
 #include <limits>
-#include <stdexcept>
 
 namespace sdlwrapper
 {
@@ -128,7 +128,7 @@ inline GameController::GameController(const GameControllerSubsystem&, int index)
     : _resource(SDL_GameControllerOpen(index))
 {
     if(!_resource.hasHandle()) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 
@@ -159,11 +159,11 @@ inline SDL_JoystickID GameController::getInstanceID() const
 {
     SDL_Joystick* joystick = SDL_GameControllerGetJoystick(_resource.getHandle());
     if(joystick == nullptr) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
     SDL_JoystickID id = SDL_JoystickInstanceID(joystick);
     if(id < 0) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
     return id;
 }

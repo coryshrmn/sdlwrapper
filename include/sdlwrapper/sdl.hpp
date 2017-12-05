@@ -16,6 +16,8 @@
 #ifndef SDLWRAPPER_SDL_HPP
 #define SDLWRAPPER_SDL_HPP
 
+#include "sdlwrapper/sdl_error.hpp"
+
 #include <cwrapper/enum.hpp>
 #include <cwrapper/resource.hpp>
 
@@ -24,7 +26,6 @@
 #include <cassert>
 #include <cstdint>
 #include <ostream>
-#include <stdexcept>
 #include <type_traits>
 
 namespace sdlwrapper
@@ -120,7 +121,7 @@ Sdl<Flags>::Sdl()
     : _resource(true)
 {
     if(SDL_Init(static_cast<std::uint32_t>(Flags)) != 0) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 

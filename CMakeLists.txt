@@ -33,13 +33,17 @@ include_directories("lib/cwrapper/include")
 add_definitions("-DSDLWRAPPER_TEST_RES_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/res\"")
 
 set(SDLWRAPPER_HEADERS
+
+# AUTO_INSERT include
     "include/sdlwrapper/audio.hpp"
     "include/sdlwrapper/detail/audio_sample_type.hpp"
     "include/sdlwrapper/game_controller.hpp"
     "include/sdlwrapper/gl_context.hpp"
     "include/sdlwrapper.hpp"
+    "include/sdlwrapper/sdl_error.hpp"
     "include/sdlwrapper/sdl.hpp"
     "include/sdlwrapper/window.hpp"
+
 )
 
 # main test

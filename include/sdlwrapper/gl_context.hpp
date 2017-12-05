@@ -16,12 +16,12 @@
 #ifndef SDLWRAPPER_GL_CONTEXT_HPP
 #define SDLWRAPPER_GL_CONTEXT_HPP
 
+#include "sdlwrapper/sdl_error.hpp"
 #include "sdlwrapper/window.hpp"
 
 #include <cwrapper/resource.hpp>
 
 #include <ostream>
-#include <stdexcept>
 
 namespace sdlwrapper
 {
@@ -55,13 +55,13 @@ enum class GLAttribute
 
 /**
  * @brief Call SDL_GL_SetAttribute() and throw on error.
- * @throws std::runtime_error
+ * @throws SdlError
  */
 void setGLAttribute(GLAttribute attribute, int value);
 
 /**
  * @brief Call SDL_GL_GetAttribute() and throw on error.
- * @throws std::runtime_error
+ * @throws SdlError
  */
 int getGLAttribute(GLAttribute attribute);
 
@@ -110,14 +110,14 @@ private:
 
 inline void setGLAttribute(GLAttribute attribute, int value) {
     if(SDL_GL_SetAttribute(static_cast<SDL_GLattr>(attribute), value) != 0) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 
 inline int getGLAttribute(GLAttribute attribute) {
     int value;
     if(SDL_GL_GetAttribute(static_cast<SDL_GLattr>(attribute), &value) != 0) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
     return value;
 }
@@ -159,14 +159,14 @@ inline GLContext::GLContext(const Window &window)
     , _profile(static_cast<Profile>(getGLAttribute(GLAttribute::CONTEXT_PROFILE_MASK)))
 {
     if(!_resource.hasHandle()) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 
 inline void GLContext::makeCurrent(const Window &window)
 {
     if(SDL_GL_MakeCurrent(window.getHandle(), _resource.getHandle()) != 0) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 

@@ -16,8 +16,8 @@
 #ifndef SDLWRAPPER_WINDOW_HPP
 #define SDLWRAPPER_WINDOW_HPP
 
+#include "sdlwrapper/sdl_error.hpp"
 #include "sdlwrapper/sdl.hpp"
-#include <stdexcept>
 
 namespace sdlwrapper
 {
@@ -90,7 +90,7 @@ inline Window::Window(const VideoSubsystem &, const char *title, int x, int y, i
     : _resource(SDL_CreateWindow(title, x, y, w, h, static_cast<std::uint32_t>(flags)))
 {
     if(!_resource.hasHandle()) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 

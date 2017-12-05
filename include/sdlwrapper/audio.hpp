@@ -16,12 +16,12 @@
 #ifndef SDLWRAPPER_AUDIO_HPP
 #define SDLWRAPPER_AUDIO_HPP
 
+#include "sdlwrapper/sdl_error.hpp"
 #include "sdlwrapper/sdl.hpp"
 #include "sdlwrapper/detail/audio_sample_type.hpp"
 
 #include <boost/integer.hpp>
 
-#include <stdexcept>
 #include <optional>
 #include <functional>
 
@@ -209,7 +209,7 @@ inline Wav::Wav(const AudioSubsystem&, const char *fileName)
     SDL_AudioSpec spec;
     std::uint8_t* buf;
     if(SDL_LoadWAV(fileName, &spec, &buf, &_sizeBytes) == nullptr) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
     _resource.setHandle(buf);
     _freq = spec.freq;
@@ -338,7 +338,7 @@ inline void AudioDevice::queue(const void* data, uint32_t len)
 {
     assert(_resource.hasHandle());
     if(SDL_QueueAudio(_resource.getHandle(), data, len) != 0) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 
@@ -370,7 +370,7 @@ inline const char* AudioDevice::getAudioDeviceName(const AudioSubsystem&, int in
 {
     const char* name = SDL_GetAudioDeviceName(index, capture);
     if(name == nullptr) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
     return name;
 }
@@ -379,7 +379,7 @@ inline void AudioDevice::init(const char *name, bool capture, const SDL_AudioSpe
 {
     _resource.setHandle(SDL_OpenAudioDevice(name, capture, &desiredSpec, &_obtainedSpec, static_cast<int>(allowedChanges)));
     if(!_resource.hasHandle()) {
-        throw std::runtime_error(SDL_GetError());
+        throw SdlError{};
     }
 }
 
