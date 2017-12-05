@@ -20,6 +20,8 @@
 
 #include <stdexcept>
 
+namespace sdlwrapper {
+
 class SdlError : public std::runtime_error
 {
 public:
@@ -27,5 +29,7 @@ public:
         : std::runtime_error(SDL_GetError())
     { }
 };
+
+} // namespace sdlwrapper
 
 #endif // SDLWRAPPER_SDL_ERROR_HPP
