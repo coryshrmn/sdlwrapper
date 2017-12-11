@@ -16,7 +16,7 @@
 #ifndef SDLWRAPPER_SDL_ERROR_HPP
 #define SDLWRAPPER_SDL_ERROR_HPP
 
-#include "SDL2/SDL_error.h"
+#include "SDL_error.h"
 
 #include <stdexcept>
 
