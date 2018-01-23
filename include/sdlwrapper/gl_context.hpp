@@ -180,8 +180,6 @@ inline const char* GLContext::getProfileName(GLContext::Profile profile)
     }
 }
 
-} // namespace sdlwrapper
-
 inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLAttribute& attribute)
 {
     return out << sdlwrapper::getGLAttributeName(attribute);
@@ -196,5 +194,7 @@ inline std::ostream& operator<<(std::ostream& out, const sdlwrapper::GLContext& 
 {
     return out << context.getMajor() << "." << context.getMinor() << " " << context.getProfile();
 }
+
+} // namespace sdlwrapper
 
 #endif // SDLWRAPPER_GL_CONTEXT_HPP
